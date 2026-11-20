@@ -9,6 +9,8 @@ App web instalable para repartir el esfuerzo en una marcha: subes un track (.gpx
 - plan de nutrición (hidratos, líquido y sodio según el objetivo y el calor), con las tomas colocadas lejos de las bajadas;
 - texto de estrategia generado a partir de los datos de la ruta.
 
+Publicada en GitHub Pages con `.github/workflows/pages.yml` (Settings → Pages → Source: GitHub Actions): https://jordixaviermp-commits.github.io/Jordi-Xavier-MP-Apps-Ciclismo/
+
 Todo se calcula en el navegador y se guarda en el dispositivo. Solo sale a la red la previsión de Open-Meteo (si pones fecha) y los mosaicos del mapa de OpenStreetMap.
 
 | Parte | Qué es |
