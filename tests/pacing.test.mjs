@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { parseGPX, buildTrack } from '../pacing/js/track.js';
-import { planRoute, planAt, distAtMs, nutritionPlan, strategyText, freshness, hydration, OBJECTIVES, DEFAULT_PROFILE, fmtDur } from '../pacing/js/pacing.js';
+import { planRoute, planAt, distAtMs, nutritionPlan, strategyText, freshness, hydration, profileFromQuery, OBJECTIVES, DEFAULT_PROFILE, fmtDur } from '../pacing/js/pacing.js';
 
 const gpx = parseGPX(readFileSync(new URL('../pacing/ejemplo.gpx', import.meta.url), 'utf8'));
 const track = buildTrack(gpx.points);
@@ -79,4 +79,12 @@ test('la estrategia habla de datos reales de la ruta', () => {
   assert.match(s.text, /Mi marcha/);
   assert.ok(s.chips.some((c) => /g CH\/h/.test(c.text)));
   assert.equal(fmtDur(7 * 3600000 + 7 * 60000), '7h07');
+});
+
+test('el enlace de importación solo acepta números dentro de rango', () => {
+  const p = profileFromQuery('ftp=310&weight=69&ctl=59&atl=64&age=abc&bike=999', DEFAULT_PROFILE);
+  assert.equal(p.ftp, 310); assert.equal(p.weight, 69); assert.equal(p.ctl, 59); assert.equal(p.atl, 64);
+  assert.equal(p.age, DEFAULT_PROFILE.age); assert.equal(p.bike, DEFAULT_PROFILE.bike);
+  assert.equal(profileFromQuery('ftp=9999&weight=x'), null);
+  assert.equal(profileFromQuery(''), null);
 });
