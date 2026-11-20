@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Pacing · Jordi Xavier MP Apps</title>
+  <meta name="description" content="Sube un track, di tu FTP y tu objetivo, y recibe los vatios por tramo, el tiempo estimado y la nutrición de tu marcha.">
+  <meta name="theme-color" content="#0e1116">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="vendor/leaflet-1.9.4/leaflet.css">
+  <link rel="stylesheet" href="css/pacing.css">
+</head>
+<body>
+  <div id="app"><p class="loading">Cargando…</p></div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <dialog id="dialog"></dialog>
+  <input id="file" type="file" accept=".gpx,.fit" hidden>
+  <noscript>Esta página necesita JavaScript.</noscript>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
