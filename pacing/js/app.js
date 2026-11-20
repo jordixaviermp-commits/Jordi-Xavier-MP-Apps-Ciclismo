@@ -1,6 +1,6 @@
 // Interfaz de Pacing: inicio, ruta (perfil, objetivo, tramos, nutrición) y mapa.
 import { parseGPX, parseFIT, buildTrack, findClimbs, pointAt, decimate, gradeColor } from './track.js';
-import { OBJECTIVES, DEFAULT_PROFILE, planRoute, planAt, nutritionPlan, strategyText, freshness, planAsText,
+import { OBJECTIVES, DEFAULT_PROFILE, profileFromQuery, planRoute, planAt, nutritionPlan, strategyText, freshness, planAsText,
   fmtDur, fmtKm, fmtPct, TYPE_LABEL } from './pacing.js';
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -401,7 +401,7 @@ document.addEventListener('click', async (ev) => {
     case 'share': share(); break;
     case 'download': download(); break;
     case 'clear': state.saved = null; store.del('route'); loadTrack(); compute(); if (state.view === 'route') history.back(); render(); break;
-    case 'connect': toast('Aún no hay conexión con plataformas. Introduce tu CTL y ATL en el perfil si los conoces.', 4200); break;
+    case 'connect': toast('Sin conexión directa con Strava: pídele a Claude un enlace de importación o escribe tu CTL y ATL en el perfil.', 5000); break;
   }
 });
 $('#file').addEventListener('change', (e) => { const f = e.target.files[0]; e.target.value = ''; if (f) fromFile(f); });
@@ -410,5 +410,14 @@ document.addEventListener('change', async (e) => {
 });
 
 // ---------- Arranque ----------
+// Enlace de importación: …/#importar?ftp=310&weight=69&ctl=59&atl=64 rellena el perfil (el fragmento # nunca se envía a ningún servidor).
+let imported = false;
+{
+  const m = /^#importar\?(.+)$/.exec(location.hash);
+  const p = m && profileFromQuery(m[1], { ...DEFAULT_PROFILE, ...(state.profile || {}) });
+  if (p) { state.profile = p; store.set('profile', p); imported = true; }
+  if (m) history.replaceState(null, '', location.pathname + location.search);
+}
 loadTrack(); await loadWeather(); compute(); render();
+if (imported) toast('Perfil actualizado desde el enlace', 3500);
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});

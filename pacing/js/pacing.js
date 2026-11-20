@@ -12,6 +12,18 @@ export const OBJECTIVES = {
 export const KIND_LABEL = { climb: 'Puerto', rolling: 'Rompepiernas', flat: 'Llano', descent: 'Descenso' };
 export const DEFAULT_PROFILE = { level: 'advanced', age: 40, weight: 72, bike: 8, ftp: 250, cda: 0.36, ctl: 0, atl: 0 };
 
+const PROFILE_LIMITS = { ftp: [80, 500], weight: [35, 140], bike: [5, 25], age: [14, 90], ctl: [0, 250], atl: [0, 300] };
+/** Perfil a partir de una cadena tipo `ftp=310&weight=69&ctl=59&atl=64`. Ignora lo que no sea un número dentro de rango. */
+export function profileFromQuery(query, base = DEFAULT_PROFILE) {
+  const q = new URLSearchParams(query), out = { ...base };
+  let n = 0;
+  for (const [k, [a, b]] of Object.entries(PROFILE_LIMITS)) {
+    const raw = q.get(k), v = raw === null || raw.trim() === '' ? NaN : Number(raw);
+    if (Number.isFinite(v) && v >= a && v <= b) { out[k] = v; n++; }
+  }
+  return n ? out : null;
+}
+
 const STEP = 100; // m entre muestras de la simulación
 const r5 = (x) => Math.round(x / 5) * 5;
 const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
